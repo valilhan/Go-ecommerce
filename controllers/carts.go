@@ -12,7 +12,7 @@ import (
 )
 
 type EnvCart struct {
-	userModel    models.UserModel
+	UserModel    models.UserModel
 	ProductModel models.ProductModel
 }
 
@@ -31,7 +31,7 @@ func (env *EnvCart) AddProduct() gin.HandlerFunc {
 		}
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 		defer cancel()
-		err := database.AddProductToCart(ctx, env.userModel, env.ProductModel, productId, userID)
+		err := database.AddProductToCart(ctx, env.UserModel, env.ProductModel, productId, userID)
 		if err != nil {
 			c.IndentedJSON(http.StatusInternalServerError, err)
 		}
@@ -39,18 +39,18 @@ func (env *EnvCart) AddProduct() gin.HandlerFunc {
 	}
 }
 
-// func RemoveItem() gin.HandlerFunc {
+func (env *EnvCart) RemoveItem() gin.HandlerFunc {
+	return func(ctx *gin.Context) {}
+}
 
-// }
+func (env *EnvCart) GetItemFromCart() gin.HandlerFunc {
+	return func(ctx *gin.Context) {}
+}
 
-// func GetItemFromCart() gin.HandlerFunc {
+func (env *EnvCart) BuyFromCart() gin.HandlerFunc {
+	return func(ctx *gin.Context) {}
+}
 
-// }
-
-// func BuyFromCart() gin.HandlerFunc {
-
-// }
-
-// func InstantBuy() gin.HandlerFunc {
-
-// }
+func (env *EnvCart) InstantBuy() gin.HandlerFunc {
+	return func(ctx *gin.Context) {}
+}

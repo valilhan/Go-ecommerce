@@ -13,7 +13,8 @@ import (
 )
 
 type Env struct {
-	user controllers.EnvUser
+	user    controllers.EnvUser
+	EnvCart controllers.EnvCart
 }
 
 func main() {
@@ -24,16 +25,18 @@ func main() {
 	}
 	app := &Env{
 		user: controllers.EnvUser{User: models.UserModel{database.NewDatabasePool()}},
-		
-    }
+		EnvCart: controllers.EnvCart{UserModel: models.UserModel{database.NewDatabasePool()},
+			ProductModel: models.ProductModel{database.NewDatabasePool()},
+		},
+	}
 	router := gin.New()
 	router.Use(gin.Logger())
 	routes.UserRoutes(router, app.user)
 	router.Use(middleware.Authentication())
-	router.POST("/addtocart", app.AddToCart())
-	router.POST("/removeitem", app.RemoveItem())
-	router.GET("/cartcheckout", app.BuyFromCart())
-	router.GET("/instantbuy", app.InstantBuy())
+	router.POST("/addtocart", app.EnvCart.AddProduct())
+	router.POST("/removeitem", app.EnvCart.RemoveItem())
+	router.GET("/cartcheckout", app.EnvCart.BuyFromCart())
+	router.GET("/instantbuy", app.Env.InstantBuy())
 
 	log.Fatal(routes.Run(":" + port))
 
