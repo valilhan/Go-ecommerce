@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"os"
-
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
 	middleware "github.com/valilhan/go-ecommerce/middleware"
@@ -14,9 +13,6 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
-
-	db, err := sqlx.Open("postgres",)
-
 	routes := gin.New()
 	routes.Use(gin.Logger())
 	routes.Use(middleware.Authentication())
