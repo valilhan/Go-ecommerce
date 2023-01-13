@@ -12,7 +12,7 @@ import (
 )
 
 type EnvUser struct {
-	user models.UserModel
+	User models.UserModel
 }
 
 var validate *validator.Validate
@@ -23,6 +23,14 @@ func HashPassword(password string) (string, error) {
 		return "", err
 	}
 	return string(hash), nil
+}
+
+func VerifyPassword(password string, passwordDb string) error {
+	err := bcrypt.CompareHashAndPassword([]byte(passwordDb), []byte(password))
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (env *EnvUser) Signup() gin.HandlerFunc {
@@ -39,7 +47,7 @@ func (env *EnvUser) Signup() gin.HandlerFunc {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		users, err := env.user.FindAllUserByEmail(ctx, *user.Email)
+		users, err := env.User.FindAllUserByEmail(ctx, *user.Email)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
@@ -48,7 +56,7 @@ func (env *EnvUser) Signup() gin.HandlerFunc {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "user with email already exists"})
 			return
 		}
-		users, err = env.user.FindAllUserByPhone(ctx, *user.Phone)
+		users, err = env.User.FindAllUserByPhone(ctx, *user.Phone)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
@@ -75,7 +83,7 @@ func (env *EnvUser) Signup() gin.HandlerFunc {
 		token, refreshToken := generate.TokenGenerator(*user.Email, *user.Phone, *user.FirstName, *user.LastName)
 		user.Token = &token
 		user.RefreshToken = &refreshToken
-		userId, err := env.user.InsertUser(ctx, user)
+		userId, err := env.User.InsertUser(ctx, user)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 			return
@@ -85,28 +93,50 @@ func (env *EnvUser) Signup() gin.HandlerFunc {
 	}
 }
 
-func Login() gin.HandlerFunc {
+func (env *EnvUser) Login() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var user models.User
 		if err := c.BindJSON(&user); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		}
-		//
+		//Check exists this user in Database
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+		defer cancel()
+		users, err := env.User.FindAllUserByEmail(ctx, *user.Email)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
+		//Check password user and database's user password
+		passwordDb := users[0].Password
+		err = VerifyPassword(*user.Password, *passwordDb)
+
+		if len(users) != 1 || err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Email or password is incorrect"})
+		}
+
+		token, refreshToken := generate.TokenGenerator(*user.Email, *user.Phone, *user.FirstName, *user.LastName)
+		err = env.User.UpdateToken(ctx, token, refreshToken, users[0].UserId)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
+		c.JSON(http.StatusFound, users[0])
 	}
 }
 
-// func VerifyPassword(string, string) bool {
+func (env *EnvUser) SearchProducts() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
 
-// }
+	}
+}
 
-// func HashPassword(string) string {
+func (env *EnvUser) SearchProductsByQuery() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
 
-// }
+	}
+}
 
-// func SearchProducts() gin.HandlerFunc {
+func (env *EnvUser) ProductViewerAdmin() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
 
-// }
-
-// func SearchProductsByQuery() gin.HandlerFunc {
-
-// }
+	}
+}

@@ -67,7 +67,7 @@ func (user *UserModel) FindAllUserByPhone(ctx context.Context, phone string) ([]
 }
 
 func (user *UserModel) InsertUser(ctx context.Context, model User) (int64, error) {
-	query := "INSERT INTO people (firstname, lastname, password, email, phone, token, refreshtoken,  createdat, updatedat) VALUES (:firstname, :lastname, :password, :email, :phone, :token, :refreshtoken, :createdat, :updatedat)"
+	query := "INSERT INTO USERS (firstname, lastname, password, email, phone, token, refreshtoken,  createdat, updatedat) VALUES (:firstname, :lastname, :password, :email, :phone, :token, :refreshtoken, :createdat, :updatedat)"
 	result, err := user.DB.NamedExecContext(ctx, query, user)
 	if err != nil {
 		return -1, ErrQueryExec
@@ -78,4 +78,13 @@ func (user *UserModel) InsertUser(ctx context.Context, model User) (int64, error
 		return -1, ErrLastInsert
 	}
 	return userId, nil
+}
+
+func (user *UserModel) UpdateToken(ctx context.Context, token string, refreshToken string, userId int64) error {
+	query := "UPDATE USERS SET token = $1, refreshtoken = $2 WHERE userid = $3"
+	_, err := user.DB.ExecContext(ctx, query, token, refreshToken, userId)
+	if err != nil {
+		return ErrQueryExec
+	}
+	return nil
 }
