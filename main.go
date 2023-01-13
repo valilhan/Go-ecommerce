@@ -36,7 +36,7 @@ func main() {
 	router.POST("/addtocart", app.EnvCart.AddProduct())
 	router.POST("/removeitem", app.EnvCart.RemoveItem())
 	router.GET("/cartcheckout", app.EnvCart.BuyFromCart())
-	router.GET("/instantbuy", app.Env.InstantBuy())
+	router.GET("/instantbuy", app.EnvCart.InstantBuy())
 
 	log.Fatal(routes.Run(":" + port))
 
