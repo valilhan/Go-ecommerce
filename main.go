@@ -23,6 +23,7 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
+	//For each model we create different POOL connection
 	app := &Env{
 		user: controllers.EnvUser{User: models.UserModel{database.NewDatabasePool()}},
 		EnvCart: controllers.EnvCart{UserModel: models.UserModel{database.NewDatabasePool()},
@@ -38,6 +39,6 @@ func main() {
 	router.GET("/cartcheckout", app.EnvCart.BuyFromCart())
 	router.GET("/instantbuy", app.EnvCart.InstantBuy())
 
-	log.Fatal(routes.Run(":" + port))
+	log.Fatal(router.Run(":" + port))
 
 }

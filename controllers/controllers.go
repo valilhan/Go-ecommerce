@@ -125,7 +125,7 @@ func (env *EnvUser) Login() gin.HandlerFunc {
 
 func (env *EnvUser) SearchProducts() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-
+		
 	}
 }
 

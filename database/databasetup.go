@@ -45,3 +45,4 @@ func NewDatabasePool() *sqlx.DB {
 	log.Println("Database successfully connection")
 	return db
 }
+
