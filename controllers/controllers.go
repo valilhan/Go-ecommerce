@@ -128,7 +128,10 @@ func (env *EnvCart) SearchProducts() gin.HandlerFunc {
 		var productList []models.Product
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 		defer cancel()
-		env.ProductModel.
+		err := env.ProductModel.SelectAllProducts(ctx, &productList)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
 	}
 }
 
