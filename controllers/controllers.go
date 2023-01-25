@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"log"
 	"net/http"
 	"time"
 
@@ -120,7 +121,7 @@ func (env *EnvUser) Login() gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		}
 		c.JSON(http.StatusFound, users[0])
-		
+
 	}
 }
 
@@ -137,9 +138,26 @@ func (env *EnvCart) SearchProducts() gin.HandlerFunc {
 	}
 }
 
-func (env *EnvUser) SearchProductsByQuery() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-
+func (env *EnvCart) SearchProductsByQuery() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var productList []models.Product
+		queryParam := c.Query("name")
+		if queryParam == "" {
+			log.Println("query param is empty")
+			c.Header("Content-Type", "application/json")
+			c.JSON(http.StatusNotFound, gin.H{"error": "Invalid index search"})
+			c.Abort()
+		}
+		var ctx, cancel = context.WithTimeout(context.Background(), time.Second*10)
+		defer cancel()
+		err := env.ProductModel.SearchProductByName(ctx, queryParam, &productList)
+		if err != nil {
+			log.Println("SearchProductByname error")
+			c.Header("Content-Type", "application/json")
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			c.Abort()
+		}
+		c.IndentedJSON(http.StatusFound, productList)
 	}
 }
 

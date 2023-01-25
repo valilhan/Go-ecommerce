@@ -15,6 +15,7 @@ import (
 type Env struct {
 	user    controllers.EnvUser
 	EnvCart controllers.EnvCart
+
 }
 
 func main() {
@@ -26,8 +27,11 @@ func main() {
 	//For each model we create different POOL connection
 	app := &Env{
 		user: controllers.EnvUser{User: models.UserModel{database.NewDatabasePool()}},
-		EnvCart: controllers.EnvCart{UserModel: models.UserModel{database.NewDatabasePool()},
+		EnvCart: controllers.EnvCart{
+			UserModel: models.UserModel{database.NewDatabasePool()},
 			ProductModel: models.ProductModel{database.NewDatabasePool()},
+			AddressModel: modles.AddressModel{database.NewDatabasePool()},
+			},
 		},
 	}
 	router := gin.New()

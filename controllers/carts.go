@@ -14,6 +14,7 @@ import (
 type EnvCart struct {
 	UserModel    models.UserModel
 	ProductModel models.ProductModel
+	AddressModel models.AddressModel
 }
 
 func (env *EnvCart) AddProduct() gin.HandlerFunc {

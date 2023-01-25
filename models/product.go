@@ -36,3 +36,7 @@ func (env *ProductModel) SelectAllProducts(ctx context.Context, productlist *[]P
 	}
 	return nil
 }
+
+func (env *ProductModel) SearchProductByName(ctx context.Context, productName string, productList *[]Product) error {
+	return nil
+}
