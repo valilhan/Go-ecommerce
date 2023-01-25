@@ -1,4 +1,4 @@
-package models
+package database
 
 import (
 	"context"
@@ -12,21 +12,6 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/joho/godotenv"
 )
-
-type Address struct {
-	Id      *string `json:"Id"`
-	House   *string `json:"House"`
-	Street  *string `json:"Street"`
-	City    *string `json:"City"`
-	Pincode *string `json:"Pincode"`
-}
-
-// Create a custom BookModel type which wraps the sql.DB connection pool.
-type AddressModel struct {
-	DB *sqlx.DB
-}
-
-// init is invoked before main()
 
 var DB_HOST, DB_NAME, DB_PASSWORD, DB_USER string
 var DB_PORT int
@@ -45,7 +30,7 @@ func init() {
 	ErrDataBaseConnection = errors.New("can not connect to database")
 }
 
-func NewAddressMode() (*sqlx.DB, error) {
+func NewDatabasePool() *sqlx.DB {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
@@ -55,8 +40,9 @@ func NewAddressMode() (*sqlx.DB, error) {
 	db, err := sqlx.ConnectContext(ctx, "postgres", psqlconn)
 	defer cancel()
 	if err != nil {
-		return nil, ErrDataBaseConnection
+		return nil
 	}
 	log.Println("Database successfully connection")
-	return db, err
+	return db
 }
+
