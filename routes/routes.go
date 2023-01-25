@@ -5,10 +5,10 @@ import (
 	"github.com/valilhan/go-ecommerce/controllers"
 )
 
-func UserRoutes(incomingRequest *gin.Engine, app controllers.EnvUser) {
-	incomingRequest.POST("/users/signup", app.Signup())
-	incomingRequest.POST("/users/login", app.Login())
-	incomingRequest.POST("/admin/addproduct", app.ProductViewerAdmin())
+func UserRoutes(incomingRequest *gin.Engine, user controllers.EnvUser, app controllers.EnvCart) {
+	incomingRequest.POST("/users/signup", user.Signup())
+	incomingRequest.POST("/users/login", user.Login())
+	incomingRequest.POST("/admin/addproduct", user.ProductViewerAdmin())
 	incomingRequest.GET("/users/productview", app.SearchProducts())
 	incomingRequest.GET("/users/search", app.SearchProductsByQuery())
 }

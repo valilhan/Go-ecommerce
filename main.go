@@ -32,7 +32,7 @@ func main() {
 	}
 	router := gin.New()
 	router.Use(gin.Logger())
-	routes.UserRoutes(router, app.user)
+	routes.UserRoutes(router, app.user, app.EnvCart)
 	router.Use(middleware.Authentication())
 	router.POST("/addtocart", app.EnvCart.AddProduct())
 	router.POST("/removeitem", app.EnvCart.RemoveItem())

@@ -88,3 +88,5 @@ func (user *UserModel) UpdateToken(ctx context.Context, token string, refreshTok
 	}
 	return nil
 }
+
+

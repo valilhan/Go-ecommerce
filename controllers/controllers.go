@@ -123,9 +123,12 @@ func (env *EnvUser) Login() gin.HandlerFunc {
 	}
 }
 
-func (env *EnvUser) SearchProducts() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		
+func (env *EnvCart) SearchProducts() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var productList []models.Product
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+		defer cancel()
+		env.ProductModel.
 	}
 }
 
