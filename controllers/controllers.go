@@ -132,6 +132,7 @@ func (env *EnvCart) SearchProducts() gin.HandlerFunc {
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		}
+		c.JSON(http.StatusFound, productList)
 	}
 }
 
