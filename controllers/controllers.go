@@ -120,6 +120,7 @@ func (env *EnvUser) Login() gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		}
 		c.JSON(http.StatusFound, users[0])
+		
 	}
 }
 
